@@ -30,22 +30,24 @@ DAGR_DIR=$WORK_DIR/dagr
 cd $DAGR_DIR 
 
 ```
-Then start by installing the main libraries. Make sure Anaconda (or better Mamba), PyTorch, and CUDA is installed. 
+Then start by installing the main libraries. Make sure Anaconda (or better Mamba), PyTorch, and CUDA is installed.  If using a HPC cluster, there might be issues with the setting of CUDA_HOME environment variable. nvcc might also not be found. Install the `cudatoolkit-dev==11.3.1` package to fix these problems. Make sure to use mamba or micromamba to solve these environments because conda would take too much time.
 ```bash
 cd $DAGR_DIR
-conda create -y -n dagr python=3.8 
-conda activate dagr
-conda install -y setuptools==69.5.1 mkl==2024.0 pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 -c pytorch
+micromamba create -n dagr python=3.8 
+micromamba activate dagr
+micromamba install setuptools==69.5.1 mkl==2024.0 pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 cudatoolkit-dev==11.3.1 -c pytorch
 ```
 Then install the pytorch-geometric libraries. This may take a while.
 ```bash
-bash install_env.sh
+micromamba install pyg -c pyg -c conda-forge
+micromamba install pytorch-spline-conv -c pyg
+pip install torch-geometric==2.5.3
 ```
 The above bash file will figure out the CUDA and Torch version, and install the appropriate pytorch-geometric packages.
 Then, download and install additional dependencies locally 
 ```bash
 bash download_and_install_dependencies.sh
-conda install -y h5py blosc-hdf5-plugin
+micromamba install h5py blosc-hdf5-plugin
 ```
 Finally, install the dagr package
 ```bash
